@@ -19,7 +19,6 @@ const ListTest = () => {
         getData()
 
     }, [])
-    console.log(listTest);
 
     const handleTestDetail = (id) => {
         if (currentUser?.role === ROLES.ADMIN) {

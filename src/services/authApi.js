@@ -12,7 +12,6 @@ const authApi = {
             const response = await axios.post(`${BASE_URL}/api/Login/Login`, data)
             toast.success("Login success");
             dispatch(loginSuccess(response.data))
-            console.log(response.data);
             if (response.data.role === ROLES.ADMIN) {
                 navigate('/home-Admin')
             } else if (response.data.role === ROLES.USER) {

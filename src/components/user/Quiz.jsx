@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import testApi from '../../services/testApi';
 import { Box, Button, Checkbox, Modal, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
@@ -12,28 +12,49 @@ const Quiz = () => {
   const [userAnswers, setUserAnswers] = useState([]);
   const [isQuizFinished, setIsQuizFinished] = useState(false);
   const currentQuestion = listQuestion[currentQuestionIndex];
-  const [timeRemaining, setTimeRemaining] = useState(time * 60)
+  const [timeRemaining, setTimeRemaining] = useState(time * 60);
   const timerRef = useRef(null);
   const [datetime, setDatetime] = useState(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [leaveConfirmed, setLeaveConfirmed] = useState(false);
-  
+  const [isConfirmed, setIsConfirmed] = useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
 
   useEffect(() => {
-    window.addEventListener('beforeMove', (e) => {
-      if (!isQuizFinished) {
-        return
+    const handleBeforeUnload = (e) => {
+      if (!isQuizFinished && !isConfirmed) {
+        e.preventDefault();
+        e.returnValue = '';
       }
-
-      e.preventDefault();
-
-      setIsModalOpen(true)
-    })
-  }, [])
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isQuizFinished, isConfirmed]);
 
   useEffect(() => {
+    // Add a new state to the browser history
+    window.history.pushState(null, '', window.location.href);
+    const handlePopState = (e) => {
+      if (!isQuizFinished && !isConfirmed) {
+        setIsModalOpen(true);
+        window.history.pushState(null, '', window.location.href); // Prevent back navigation
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [isQuizFinished, isConfirmed]);
+
+  const handleLeave = () => {
+    navigate("/list-test");
+  };
+
+  const handleStay = () => {
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
+
     if (timeRemaining > 0 && !isQuizFinished) {
       timerRef.current = setInterval(() => {
         setTimeRemaining(prevTime => prevTime - 1);
@@ -47,10 +68,10 @@ const Quiz = () => {
   useEffect(() => {
     const getData = async () => {
       let res = await testApi.GetAllQuestionByTestId(testId);
-      setListQuestion(res)
-    }
-    getData()
-  }, [testId])
+      setListQuestion(res);
+    };
+    getData();
+  }, [testId]);
 
   const handleAnswerChange = (questionId, answerId) => {
     setUserAnswers(prevAnswers => {
@@ -96,17 +117,14 @@ const Quiz = () => {
       timeStart: datetime,
       testId: testId,
       list: userAnswers
-    }
-      testApi.addTestDetail(data);
-      setIsQuizFinished(true);
-      navigate(`/test-finish/${newScore}/${datetime}/${testId}`, { replace: true });
+    };
+    await testApi.addTestDetail(data);
+    setIsQuizFinished(true);
+    navigate(`/test-finish/${newScore}/${datetime}/${testId}`, { replace: true });
   };
-
 
   const minutes = Math.floor(timeRemaining / 60);
   const seconds = timeRemaining % 60;
-
-  console.log(listQuestion);
 
 
   return (
@@ -130,42 +148,48 @@ const Quiz = () => {
       </Box>
 
       <Box mt={3}>
-        {currentQuestionIndex == 0 && (<>
-          <Button variant="contained" color="primary" onClick={handleNextQuestion}>
-            Next Question
-          </Button>
-          <Button variant="contained" color="secondary" onClick={(e) => handleFinishQuiz()}>
-            Finish Quiz
-          </Button>
-        </>)}
+        {currentQuestionIndex == 0 && (
+          <>
+            <Button variant="contained" color="primary" onClick={handleNextQuestion}>
+              Next Question
+            </Button>
+          </>
+        )}
 
-        {currentQuestionIndex !== 0 && currentQuestionIndex < listQuestion.length - 1 && (<>
-          <Button variant="contained" color="primary" onClick={handleBackQuestion}>
-            Back Question
-          </Button>
-          <Button variant="contained" color="primary" onClick={handleNextQuestion}>
-            Next Question
-          </Button>
-          <Button variant="contained" color="secondary" onClick={(e) => handleFinishQuiz()}>
-            Finish Quiz
-          </Button>
-        </>)}
+        {currentQuestionIndex !== 0 && currentQuestionIndex < listQuestion.length - 1 && (
+          <>
+            <Button variant="contained" color="primary" onClick={handleBackQuestion}>
+              Back Question
+            </Button>
+            <Button variant="contained" color="primary" onClick={handleNextQuestion}>
+              Next Question
+            </Button>
+          </>
+        )}
 
-        {currentQuestionIndex !== 0 && currentQuestionIndex == listQuestion.length - 1 && (<>
-          <Button variant="contained" color="primary" onClick={handleBackQuestion}>
-            Back Question
-          </Button>
-          <Button variant="contained" color="secondary" onClick={(e) => handleFinishQuiz()}>
-            Finish Quiz
-          </Button>
-        </>)}
-
-
+        {currentQuestionIndex !== 0 && currentQuestionIndex == listQuestion.length - 1 && (
+          <>
+            <Button variant="contained" color="primary" onClick={handleBackQuestion}>
+              Back Question
+            </Button>
+          </>
+        )}
       </Box>
 
-      <Modal open={isModalOpen}
-      //  onClose={handleModalClose}
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 16,
+          right: 16,
+          zIndex: 1000
+        }}
       >
+        <Button variant="contained" color="secondary" onClick={handleFinishQuiz}>
+          Finish Quiz
+        </Button>
+      </Box>
+
+      <Modal open={isModalOpen}>
         <Box
           sx={{
             position: 'absolute',
@@ -185,17 +209,17 @@ const Quiz = () => {
             Your progress will be lost if you leave the page.
           </Typography>
           <Box sx={{ mt: 2 }}>
-            {/* <Button variant="contained" color="primary" onClick={handleModalConfirm}>
+            <Button variant="contained" color="primary" onClick={() => handleLeave()}>
               Leave
             </Button>
-            <Button variant="contained" color="secondary" onClick={handleModalClose} sx={{ ml: 2 }}>
+            <Button variant="contained" color="secondary" onClick={() => handleStay()}>
               Stay
-            </Button> */}
+            </Button>
           </Box>
         </Box>
       </Modal>
     </Box>
-  )
-}
+  );
+};
 
-export default Quiz
+export default Quiz;

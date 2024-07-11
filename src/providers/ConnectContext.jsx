@@ -30,7 +30,6 @@ const ChatProvider = ({ children }) => {
             .build();
 
           connection.on("ReceivedNotification", (data) => {
-            console.log(data);
             const sound = new Audio(messageSound);
             sound.play();
             setListNotification((prevNotifications) => [data, ...prevNotifications]);
@@ -56,7 +55,6 @@ const ChatProvider = ({ children }) => {
           setConnection(connection);
         }
       } catch (e) {
-        console.log(e);
       }
     }
     getData()
@@ -88,7 +86,6 @@ const ChatProvider = ({ children }) => {
     getData()
   }, [])
 
-  console.log(listMessages);
 
   return (
     <ChatContext.Provider

@@ -27,7 +27,6 @@ const SideBar = () => {
   const [selected, setSelected] = useState("DashBoard");
   
     const currentUser = useSelector((state) => state.auth.login?.currentUser);
-    console.log(currentUser);
 
   return (
     <Box >

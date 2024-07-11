@@ -50,7 +50,6 @@ const NewQuestion = () => {
                 questionName: question,
                 answers: answers
             }
-            console.log(data);
             await questionApi.createQuestion(data)
             reset()
         }

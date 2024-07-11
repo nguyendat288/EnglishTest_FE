@@ -31,7 +31,6 @@ const Register = () => {
                 password : password,
                 email : email,
                }
-               console.log(data);
         }else{
             toast.error("Password and re-password not match")
         }

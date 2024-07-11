@@ -3,7 +3,6 @@ import { Box, IconButton, ListItemButton, ListItemText, Typography } from '@mui/
 import React, { useState } from 'react'
 
 const ListUser = ({ listUser, currentUser,hanldeSelectChat }) => {
-    console.log(listUser);
     const getMessageColor = (isRead, senderId) => {
         if (senderId == currentUser?.userId) {
             return "EEEEEE";

@@ -7,7 +7,6 @@ const TestDetail = () => {
     const { testId } = useParams();
     const [test, setTest] = useState();
     const navigate = useNavigate();
-    console.log(testId);
     useEffect(() => {
         const getData = async () => {
             let res = await testApi.GetTestById(testId);

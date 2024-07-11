@@ -16,7 +16,6 @@ const ListQuestion = () => {
         getData();
     }, [])
 
-    console.log(listQuestion);
 
     const columns = [
         {
@@ -39,7 +38,7 @@ const ListQuestion = () => {
             headerAlign: 'center',
             renderCell: (params) => (
                 <>
-                    <Button onClick={(e) => handleDetail(params?.row?.questionId)}>Detail</Button>
+                    {/* <Button onClick={(e) => handleDetail(params?.row?.questionId)}>Detail</Button> */}
                     <Button onClick={(e) => handleRemove(params?.row?.questionId)}>Remove</Button>
                 </>
             )
@@ -47,11 +46,8 @@ const ListQuestion = () => {
 
     ]
 
-    const handleDetail = (id) => {
-        console.log("detail");
-    }
+
     const handleRemove = async (id) => {
-        console.log(id);
         const updatedList = listQuestion.filter((item) => item.questionId !== id);
         setListQuestion(updatedList);
         await questionApi.removeQuestion(id)

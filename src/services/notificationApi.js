@@ -35,7 +35,6 @@ const notificationApi = {
     MarkToRead: async (notificationId) => {
         try {
             let res = await axios.put(`${BASE_URL}/api/User/notification/${notificationId}`)
-            console.log("dấdasdasdasdsad");
              return res?.data;
         } catch (error) {
             if (error.response.status === 501) {

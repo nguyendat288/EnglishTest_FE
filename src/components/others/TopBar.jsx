@@ -75,11 +75,9 @@ const TopBar = () => {
         if (option === 'markAsRead') {
             await notificationApi.MarkToRead(selectedNotification?.notificationId);
             updateNotificationStatus(selectedNotification?.notificationId);
-            console.log('Marking notification as read');
         } else if (option === 'delete') {
             await notificationApi.DeleteNotification(selectedNotification?.notificationId);
             removeNotificationStatus(selectedNotification?.notificationId);
-            console.log('Deleting notification');
             // Add your logic to delete all notifications
         }
         handleMenuClose();
@@ -96,14 +94,11 @@ const TopBar = () => {
     const handleTopMenuOptionClick = (option) => {
         if (option === 'markAllAsRead') {
             // Add your logic to mark all notifications as read
-            console.log('Marking all notifications as read');
         } else if (option === 'deleteAll') {
             // Add your logic to delete all notifications
-            console.log('Deleting all notifications');
         }
         else if (option === 'check') {
             // Add your logic to delete all notifications
-            console.log('check');
         }
         handleTopMenuClose();
     };
@@ -111,7 +106,6 @@ const TopBar = () => {
     const handleCheck = async (link, notificationId) => {
         await notificationApi.MarkToRead(notificationId);
         updateNotificationStatus(notificationId);
-        console.log(link);
     };
 
     const getNotificationColor = (notificationType) => {

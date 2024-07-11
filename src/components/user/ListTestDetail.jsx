@@ -18,9 +18,6 @@ const ListTestDetail = () => {
         getData()
     }, [])
 
-    console.log(listTest);
-    console.log(currentUser);
-
     const columns = [
         {
             field: "testId",
@@ -83,15 +80,15 @@ const ListTestDetail = () => {
 
     const formatDateTime = (dateString) => {
         const date = new Date(dateString);
-
-        const day = date.getDate();
-        const month = date.getMonth() + 1; // Months are zero-indexed
+      
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
         const year = date.getFullYear();
-        const hours = date.getHours();
+        const hours = (date.getHours() + 7) % 24;
         const minutes = date.getMinutes().toString().padStart(2, '0'); // Add leading zero if needed
-
+      
         return `${day}/${month}/${year}, ${hours}:${minutes}`;
-    };
+      };
     return (
         <>
             {listTest && listTest.length == 0 && (<>

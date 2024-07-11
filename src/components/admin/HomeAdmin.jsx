@@ -7,7 +7,6 @@ import { Outlet } from 'react-router-dom';
 
 const HomeAdmin = () => {
     const currentUser = useSelector((state) => state.auth.login?.currentUser);
-    console.log(currentUser);
     return (
         <Box display='flex'>
             <SideBarAdmin />

@@ -32,7 +32,6 @@ const Chat = () => {
   }, [chatSelect])
 
   const hanldeSelectChat = (conversationId, userId) => {
-    console.log(userId);
     setChatSelect(conversationId)
     navigate(`/chat/${userId}`)
   }
@@ -43,7 +42,6 @@ const Chat = () => {
       senderId : currentUser?.userId,
       messageText : message
     }
-    console.log(data);
     await chatApi.SendMessage(data)
     setMessage('')
   }

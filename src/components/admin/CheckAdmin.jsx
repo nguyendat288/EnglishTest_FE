@@ -32,8 +32,6 @@ const CheckAdmin = () => {
         getData();
     }, [])
 
-    console.log(listUser);
-    console.log(listNotification);
 
     const columns = [
         {
@@ -83,7 +81,6 @@ const CheckAdmin = () => {
     const handleSendNoti = async () => {
         await notificationApi.SendNotificationToAll();
         // await connection.invoke("SendNotificationToAll", "check Notification sen All ")
-        console.log("send All ");
     }
     const handleDetail = async (userId) => {
         let message = " check client";
